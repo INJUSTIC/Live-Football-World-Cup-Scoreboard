@@ -1,5 +1,7 @@
 package com.sportradar;
 
+import com.sportradar.exceptions.MatchNotFoundException;
+
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,6 +29,23 @@ public class Scoreboard {
         }
 
         matches.put(matchName, new Match(homeTeam, awayTeam));
+    }
+
+    public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
+        if (homeScore < 0 || awayScore < 0) {
+            throw new IllegalArgumentException("Scores cannot be negative.");
+        }
+
+        homeTeam = normalizeTeamName(homeTeam);
+        awayTeam = normalizeTeamName(awayTeam);
+
+        String matchName = getMatchName(homeTeam, awayTeam);
+        Match match = matches.get(matchName);
+        if (match == null) {
+            throw new MatchNotFoundException("Match not found.");
+        }
+
+        match.updateScore(homeScore, awayScore);
     }
 
     public List<Match> getSummary() {
