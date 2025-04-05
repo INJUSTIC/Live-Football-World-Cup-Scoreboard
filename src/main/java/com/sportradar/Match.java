@@ -29,6 +29,6 @@ public class Match {
 
     @Override
     public String toString() {
-        return homeTeam + " " + homeScore + " - " + awayScore + " " + awayTeam;
+        return homeTeam + " " + homeScore + " - " + awayTeam + " " + awayScore;
     }
 }

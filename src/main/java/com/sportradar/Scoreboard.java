@@ -3,17 +3,17 @@ package com.sportradar;
 import com.sportradar.exceptions.MatchNotFoundException;
 
 import java.util.Comparator;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Scoreboard {
 
-    private final Map<String, Match> matches = new LinkedHashMap<>();
+    private final Map<String, Match> matches = new HashMap<>();
     private static final Comparator<Match> SUMMARY_COMPARATOR = Comparator
             .comparingInt(Match::getTotalScore).reversed()
-            .thenComparing(Match::getStartTime).reversed();
+            .thenComparing(Comparator.comparing(Match::getStartTime).reversed());
 
     public void startMatch(String homeTeam, String awayTeam) {
         homeTeam = normalizeTeamName(homeTeam);
