@@ -48,6 +48,14 @@ public class Scoreboard {
         match.updateScore(homeScore, awayScore);
     }
 
+    public void finishMatch(String homeTeam, String awayTeam) {
+        homeTeam = normalizeTeamName(homeTeam);
+        awayTeam = normalizeTeamName(awayTeam);
+        String key = getMatchName(homeTeam, awayTeam);
+        if (!matches.containsKey(key)) throw new MatchNotFoundException("Match not found.");
+        matches.remove(key);
+    }
+
     public List<Match> getSummary() {
         return matches.values().stream()
                 .sorted(SUMMARY_COMPARATOR)
