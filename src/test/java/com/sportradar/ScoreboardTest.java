@@ -1,5 +1,6 @@
 package com.sportradar;
 
+import com.sportradar.exceptions.MatchNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -65,5 +66,42 @@ public class ScoreboardTest {
     void testGetSummary_noMatchesReturnsEmptyList() {
         List<Match> summary = scoreboard.getSummary();
         assertEquals(0, summary.size());
+    }
+
+    @Test
+    void testUpdateScore_successfullyUpdatesScore() {
+        scoreboard.startMatch("Mexico", "Canada");
+        scoreboard.updateScore("Mexico", "Canada", 2, 1);
+
+        Match match = scoreboard.getSummary().get(0);
+        assertEquals(2, match.getHomeScore());
+        assertEquals(1, match.getAwayScore());
+    }
+
+    @Test
+    void testUpdateScore_matchNotFoundThrowsException() {
+        assertThrows(MatchNotFoundException.class, () -> scoreboard.updateScore("Spain", "Brazil", 1, 0));
+    }
+
+    @Test
+    void testUpdateScore_negativeScoreThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.updateScore("Belarus", "England", -1, 1));
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.updateScore("Belarus", "England", 1, -1));
+    }
+
+    @Test
+    void testUpdateScore_nullTeamThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.updateScore(null, "Canada", 2, 1));
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.updateScore("Mexico", null, 2, 1));
+    }
+
+    @Test
+    void testUpdateScore_teamNamesAreTrimmedAndLowercased() {
+        scoreboard.startMatch("Mexico", "Canada");
+        scoreboard.updateScore("  MEXICO ", "  cAnAdA ", 2, 1);
+
+        Match match = scoreboard.getSummary().get(0);
+        assertEquals(2, match.getHomeScore());
+        assertEquals(1, match.getAwayScore());
     }
 }
