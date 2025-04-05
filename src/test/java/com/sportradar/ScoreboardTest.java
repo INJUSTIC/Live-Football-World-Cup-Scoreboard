@@ -104,4 +104,33 @@ public class ScoreboardTest {
         assertEquals(2, match.getHomeScore());
         assertEquals(1, match.getAwayScore());
     }
+
+    @Test
+    void testFinishMatch_successfullyRemovesMatch() {
+        scoreboard.startMatch("Mexico", "Canada");
+        scoreboard.finishMatch("Mexico", "Canada");
+
+        List<Match> summary = scoreboard.getSummary();
+        assertEquals(0, summary.size());
+    }
+
+    @Test
+    void testFinishMatch_matchNotFoundThrowsException() {
+        assertThrows(MatchNotFoundException.class, () -> scoreboard.finishMatch("Spain", "Brazil"));
+    }
+
+    @Test
+    void testFinishMatch_nullTeamThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.finishMatch(null, "Canada"));
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.finishMatch("Mexico", null));
+    }
+
+    @Test
+    void testFinishMatch_teamNamesAreTrimmedAndLowercased() {
+        scoreboard.startMatch("Mexico", "Canada");
+        scoreboard.finishMatch("  MEXICO ", "  cAnAdA ");
+
+        List<Match> summary = scoreboard.getSummary();
+        assertEquals(0, summary.size());
+    }
 }
