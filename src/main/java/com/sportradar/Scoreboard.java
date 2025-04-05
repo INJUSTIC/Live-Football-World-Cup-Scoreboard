@@ -1,11 +1,17 @@
 package com.sportradar;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Scoreboard {
 
     private final Map<String, Match> matches = new LinkedHashMap<>();
+    private static final Comparator<Match> SUMMARY_COMPARATOR = Comparator
+            .comparingInt(Match::getTotalScore).reversed()
+            .thenComparing(Match::getStartTime).reversed();
 
     public void startMatch(String homeTeam, String awayTeam) {
         homeTeam = normalizeTeamName(homeTeam);
@@ -21,6 +27,12 @@ public class Scoreboard {
         }
 
         matches.put(matchName, new Match(homeTeam, awayTeam));
+    }
+
+    public List<Match> getSummary() {
+        return matches.values().stream()
+                .sorted(SUMMARY_COMPARATOR)
+                .collect(Collectors.toList());
     }
 
     private String getMatchName(String homeTeam, String awayTeam) {
