@@ -28,6 +28,10 @@ public class Scoreboard {
             throw new IllegalArgumentException("Match already started.");
         }
 
+        if (isTeamBusy(homeTeam) || isTeamBusy(awayTeam)) {
+            throw new IllegalArgumentException("One of the teams is already playing.");
+        }
+
         matches.put(matchName, new Match(homeTeam, awayTeam));
     }
 
@@ -75,5 +79,10 @@ public class Scoreboard {
             throw new IllegalArgumentException("Team name cannot be empty.");
         }
         return Character.toUpperCase(cleanedName.charAt(0)) + cleanedName.substring(1);
+    }
+
+    private boolean isTeamBusy(String teamName) {
+        return matches.values().stream()
+                .anyMatch(match -> match.getHomeTeam().equals(teamName) || match.getAwayTeam().equals(teamName));
     }
 }

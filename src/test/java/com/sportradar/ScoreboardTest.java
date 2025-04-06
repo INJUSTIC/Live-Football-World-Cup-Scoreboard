@@ -63,6 +63,14 @@ public class ScoreboardTest {
     }
 
     @Test
+    void testStartMatch_teamsAlreadyPlayingThrowsException() {
+        scoreboard.startMatch("Mexico", "Canada");
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.startMatch("Mexico", "Brazil"));
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.startMatch("Spain", "Canada"));
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.startMatch("  MEXico", "Brazil"));
+    }
+
+    @Test
     void testGetSummary_noMatchesReturnsEmptyList() {
         List<Match> summary = scoreboard.getSummary();
         assertEquals(0, summary.size());
